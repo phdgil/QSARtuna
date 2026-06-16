@@ -16,10 +16,10 @@ from sklearn.base import BaseEstimator, ClassifierMixin, RegressorMixin
 
 import optunaz
 from optunaz import algorithms
-from optunaz.algorithms import chem_prop
-from optunaz.algorithms import chem_prop_hyperopt
-from optunaz.algorithms import probabilistic_random_forest
-from optunaz.algorithms import calibrated_cv
+from optunaz.algorithms import fast_prop
+from optunaz.algorithms import tabpfn
+
+
 from optunaz.config import (
     ModelMode,
     OptimizationDirection,
@@ -292,7 +292,9 @@ class PRFClassifier(Algorithm):
     parameters: PRFClassifierParameters
 
     def estimator(self):
-        return optunaz.algorithms.probabilistic_random_forest.PRFClassifier(
+        from optunaz.algorithms import probabilistic_random_forest
+
+        return probabilistic_random_forest.PRFClassifier(
             max_depth=self.parameters.max_depth,
             max_features=self.parameters.max_features,
             n_estimators=self.parameters.n_estimators,
@@ -302,6 +304,125 @@ class PRFClassifier(Algorithm):
             new_syn_data_frac=self.parameters.new_syn_data_frac,
             min_py_sum_leaf=self.parameters.min_py_sum_leaf,
         )
+
+
+
+@dataclass
+class TabPFNClassifier(Algorithm):
+    @dataclass
+    class TabPFNClassifierParameters:
+        max_time: int = field(default=150, metadata=schema(min=1))
+        random_state: int = field(default=42, metadata=schema(min=0))
+        max_feats: int = field(default=500, metadata=schema(min=1))
+        feature_selection: str = field(default="k_best")
+        eval_metric: str = field(default="accuracy")
+
+    name: Literal["TabPFNClassifier"]
+    parameters: TabPFNClassifierParameters
+
+    def estimator(self):
+        return tabpfn.TabPFNClassifier(
+            max_time=self.parameters.max_time,
+            random_state=self.parameters.random_state,
+            max_feats=self.parameters.max_feats,
+            feature_selection=self.parameters.feature_selection,
+            eval_metric=self.parameters.eval_metric,
+        )
+
+
+@dataclass
+class TabPFNRegressor(Algorithm):
+    @dataclass
+    class TabPFNRegressorParameters:
+        max_time: int = field(default=150, metadata=schema(min=1))
+        random_state: int = field(default=42, metadata=schema(min=0))
+        max_feats: int = field(default=500, metadata=schema(min=1))
+        feature_selection: str = field(default="k_best")
+        eval_metric: str = field(default="root_mean_squared_error")
+
+    name: Literal["TabPFNRegressor"]
+    parameters: TabPFNRegressorParameters
+
+    def estimator(self):
+        return tabpfn.TabPFNRegressor(
+            max_time=self.parameters.max_time,
+            random_state=self.parameters.random_state,
+            max_feats=self.parameters.max_feats,
+            feature_selection=self.parameters.feature_selection,
+            eval_metric=self.parameters.eval_metric,
+        )
+
+
+@dataclass
+class FastPropClassifier(Algorithm):
+    @dataclass
+    class FastPropClassifierParameters:
+        batch_size: int = field(default=64, metadata=schema(min=16))
+        number_epochs: int = field(default=100, metadata=schema(min=1))
+        number_repeats: int = field(default=1, metadata=schema(min=1))
+        patience: int = field(default=10, metadata=schema(min=0))
+        hidden_size: int = field(default=1800, metadata=schema(min=100))
+        fnn_layers: int = field(default=2, metadata=schema(min=1))
+        learning_rate: float = field(default=0.0001, metadata=schema(min=0.00001))
+        random_seed: int = field(default=42, metadata=schema(min=1))
+        train_size: float = field(default=0.8, metadata=schema(min=0.00001))
+        val_size: float = field(default=0.15, metadata=schema(min=0.00001))
+        test_size: float = field(default=0.05, metadata=schema(min=0.00001))
+
+
+    name: Literal["FastPropClassifier"]
+    parameters: FastPropClassifierParameters
+
+    def estimator(self):
+        return fast_prop.FastPropClassifier(
+            batch_size=self.parameters.batch_size,
+            number_epochs=self.parameters.number_epochs,
+            number_repeats=self.parameters.number_repeats,
+            patience=self.parameters.patience,
+            hidden_size=self.parameters.hidden_size,
+            fnn_layers=self.parameters.fnn_layers,
+            learning_rate=self.parameters.learning_rate,
+            random_seed=self.parameters.random_seed,
+            train_size=self.parameters.train_size,
+            val_size=self.parameters.val_size,
+            test_size=self.parameters.test_size,
+        )
+
+
+@dataclass
+class FastPropRegressor(Algorithm):
+    @dataclass
+    class FastPropRegressorParameters:
+        batch_size: int = field(default=64, metadata=schema(min=16))
+        number_epochs: int = field(default=100, metadata=schema(min=1))
+        number_repeats: int = field(default=1, metadata=schema(min=1))
+        patience: int = field(default=10, metadata=schema(min=0))
+        hidden_size: int = field(default=1800, metadata=schema(min=100))
+        fnn_layers: int = field(default=2, metadata=schema(min=1))
+        learning_rate: float = field(default=0.0001, metadata=schema(min=0.00001))
+        random_seed: int = field(default=42, metadata=schema(min=1))
+        train_size: float = field(default=0.8, metadata=schema(min=0.00001))
+        val_size: float = field(default=0.15, metadata=schema(min=0.00001))
+        test_size: float = field(default=0.05, metadata=schema(min=0.00001))
+
+    name: Literal["FastPropRegressor"]
+    parameters: FastPropRegressorParameters
+
+    def estimator(self):
+        return fast_prop.FastPropRegressor(
+            batch_size=self.parameters.batch_size,
+            number_epochs=self.parameters.number_epochs,
+            number_repeats=self.parameters.number_repeats,
+            patience=self.parameters.patience,
+            hidden_size=self.parameters.hidden_size,
+            fnn_layers=self.parameters.fnn_layers,
+            learning_rate=self.parameters.learning_rate,
+            random_seed=self.parameters.random_seed,
+            train_size=self.parameters.train_size,
+            val_size=self.parameters.val_size,
+            test_size=self.parameters.test_size,
+        )
+
 
 
 @dataclass
@@ -342,7 +463,9 @@ class ChemPropRegressor(Algorithm):
     parameters: ChemPropRegressorParameters
 
     def estimator(self):
-        return optunaz.algorithms.chem_prop.ChemPropRegressor(
+        from optunaz.algorithms import chem_prop
+
+        return chem_prop.ChemPropRegressor(
             activation=self.parameters.activation,
             aggregation=self.parameters.aggregation,
             aggregation_norm=int(self.parameters.aggregation_norm),
@@ -361,6 +484,8 @@ class ChemPropRegressor(Algorithm):
             warmup_epochs_ratio=self.parameters.warmup_epochs_ratio,
             aux_weight_pc=self.parameters.aux_weight_pc,
         )
+
+
 
 
 @dataclass
@@ -401,7 +526,9 @@ class ChemPropClassifier(Algorithm):
     parameters: ChemPropClassifierParameters
 
     def estimator(self):
-        return optunaz.algorithms.chem_prop.ChemPropClassifier(
+        from optunaz.algorithms import chem_prop
+
+        return chem_prop.ChemPropClassifier(
             activation=self.parameters.activation,
             aggregation=self.parameters.aggregation,
             aggregation_norm=int(self.parameters.aggregation_norm),
@@ -422,6 +549,8 @@ class ChemPropClassifier(Algorithm):
         )
 
 
+
+
 @dataclass
 class ChemPropRegressorPretrained(Algorithm):
     @dataclass
@@ -434,11 +563,15 @@ class ChemPropRegressorPretrained(Algorithm):
     parameters: ChemPropRegressorPretrainedParameters
 
     def estimator(self):
-        return optunaz.algorithms.chem_prop.ChemPropRegressorPretrained(
+        from optunaz.algorithms import chem_prop
+
+        return chem_prop.ChemPropRegressorPretrained(
             epochs=self.parameters.epochs,
             frzn=self.parameters.frzn,
             pretrained_model=self.parameters.pretrained_model,
         )
+
+
 
 
 @dataclass
@@ -456,7 +589,9 @@ class ChemPropHyperoptClassifier(Algorithm):
     parameters: ChemPropHyperoptClassifierParameters
 
     def estimator(self):
-        return optunaz.algorithms.chem_prop_hyperopt.ChemPropHyperoptClassifier(
+        from optunaz.algorithms import chem_prop_hyperopt
+
+        return chem_prop_hyperopt.ChemPropHyperoptClassifier(
             ensemble_size=self.parameters.ensemble_size,
             epochs=self.parameters.epochs,
             features_generator=self.parameters.features_generator,
@@ -464,6 +599,8 @@ class ChemPropHyperoptClassifier(Algorithm):
             search_parameter_level=self.parameters.search_parameter_level,
             aux_weight_pc=self.parameters.aux_weight_pc,
         )
+
+
 
 
 @dataclass
@@ -481,7 +618,9 @@ class ChemPropHyperoptRegressor(Algorithm):
     parameters: ChemPropHyperoptRegressorParameters
 
     def estimator(self):
-        return optunaz.algorithms.chem_prop_hyperopt.ChemPropHyperoptRegressor(
+        from optunaz.algorithms import chem_prop_hyperopt
+
+        return chem_prop_hyperopt.ChemPropHyperoptRegressor(
             ensemble_size=self.parameters.ensemble_size,
             epochs=self.parameters.epochs,
             features_generator=self.parameters.features_generator,
@@ -489,6 +628,7 @@ class ChemPropHyperoptRegressor(Algorithm):
             search_parameter_level=self.parameters.search_parameter_level,
             aux_weight_pc=self.parameters.aux_weight_pc,
         )
+
 
 
 @dataclass
@@ -592,7 +732,10 @@ AnyUncalibratedClassifier = Union[
     ChemPropHyperoptClassifier,
     ChemPropHyperoptRegressor,
     CustomClassificationModel,
+    TabPFNClassifier,
+    FastPropClassifier,
 ]
+
 
 
 @dataclass
@@ -613,7 +756,9 @@ class CalibratedClassifierCVWithVA(Algorithm):
             n_jobs = 1
         else:
             n_jobs = -1
-        return optunaz.algorithms.calibrated_cv.CalibratedClassifierCVWithVA(
+        from optunaz.algorithms import calibrated_cv
+
+        return calibrated_cv.CalibratedClassifierCVWithVA(
             estimator,
             n_folds=self.parameters.n_folds,
             ensemble=self.parameters.ensemble == "True",
@@ -635,6 +780,8 @@ AnyRegression = Union[
     ChemPropHyperoptRegressor,
     ChemPropRegressorPretrained,
     CustomRegressionModel,
+    TabPFNRegressor,
+    FastPropRegressor,
 ]
 
 MapieCompatible = Union[

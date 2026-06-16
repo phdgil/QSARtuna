@@ -29,6 +29,11 @@ shap = "0.41.0"
 MAPIE = "0.6.4"
 protobuf = "4.25.3" # 5.26.0 causes an error
 torch = "2.0.0"
+lightning = "*"
+fastprop = "^1.1.3"
+tabpfn = "2.1.3"
+tabpfn-extensions = {version = "0.1.3", extras = ["all"]}
+autogluon.tabular = "*"
 
 
 [tool.poetry.group.optimization.dependencies]

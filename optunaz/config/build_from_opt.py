@@ -331,6 +331,210 @@ def suggest_alg_params(trial: FrozenTrial, alg: opt.AnyAlgorithm) -> build.AnyAl
             use_py_gini=use_py_gini,
             use_py_leafs=use_py_leafs,
         )
+    elif isinstance(alg, opt.TabPFNClassifier):
+        max_time = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_MAX_TIME),
+            low=para.max_time,
+            high=para.max_time,
+        )
+        random_state = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_RANDOM_STATE),
+            low=para.random_state,
+            high=para.random_state,
+        )
+        max_feats = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_MAX_FEATS),
+            low=para.max_feats,
+            high=para.max_feats,
+        )
+        feature_selection = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_FEATURE_SELECTION),
+            choices=para.feature_selection,
+        )
+        eval_metric = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_EVAL_METRIC),
+            choices=para.eval_metric,
+        )
+        return build.TabPFNClassifier.new(
+            max_time=max_time,
+            random_state=random_state,
+            max_feats=max_feats,
+            feature_selection=feature_selection,
+            eval_metric=eval_metric,
+        )
+    elif isinstance(alg, opt.TabPFNRegressor):
+        max_time = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_MAX_TIME),
+            low=para.max_time,
+            high=para.max_time,
+        )
+        random_state = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_RANDOM_STATE),
+            low=para.random_state,
+            high=para.random_state,
+        )
+        max_feats = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_MAX_FEATS),
+            low=para.max_feats,
+            high=para.max_feats,
+        )
+        feature_selection = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_FEATURE_SELECTION),
+            choices=para.feature_selection,
+        )
+        eval_metric = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_TABPFN_EVAL_METRIC),
+            choices=para.eval_metric,
+        )
+        return build.TabPFNRegressor.new(
+            max_time=max_time,
+            random_state=random_state,
+            max_feats=max_feats,
+            feature_selection=feature_selection,
+            eval_metric=eval_metric,
+        )
+    elif isinstance(alg, opt.FastPropClassifier):
+        hidden_size = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_HIDDEN_SIZE),
+            low=para.hidden_size.low,
+            high=para.hidden_size.high,
+            step=para.hidden_size.step,
+        )
+        fnn_layers = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_FNN_LAYERS),
+            low=para.fnn_layers.low,
+            high=para.fnn_layers.high,
+            step=para.fnn_layers.step,
+        )
+        learning_rate = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_LEARNING_RATE),
+            low=para.learning_rate.low,
+            high=para.learning_rate.high,
+            log=True,
+        )
+        number_epochs = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_NUMBER_EPOCHS),
+            low=para.number_epochs,
+            high=para.number_epochs,
+        )
+        number_repeats = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_NUMBER_REPEATS),
+            low=para.number_repeats,
+            high=para.number_repeats,
+        )
+        patience = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_PATIENCE),
+            low=para.patience,
+            high=para.patience,
+        )
+        batch_size = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_BATCH_SIZE),
+            choices=para.batch_size,
+        )
+        train_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_TRAIN_SIZE),
+            low=para.train_size,
+            high=para.train_size,
+        )
+        val_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_VAL_SIZE),
+            low=para.val_size,
+            high=para.val_size,
+        )
+        test_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_TEST_SIZE),
+            low=para.test_size,
+            high=para.test_size,
+        )
+        random_seed = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_RANDOM_SEED),
+            low=para.random_seed,
+            high=para.random_seed,
+        )
+        return build.FastPropClassifier.new(
+            batch_size=batch_size,
+            number_epochs=number_epochs,
+            number_repeats=number_repeats,
+            patience=patience,
+            hidden_size=hidden_size,
+            fnn_layers=fnn_layers,
+            learning_rate=learning_rate,
+            random_seed=random_seed,
+            train_size=train_size,
+            val_size=val_size,
+            test_size=test_size,
+        )
+    elif isinstance(alg, opt.FastPropRegressor):
+        hidden_size = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_HIDDEN_SIZE),
+            low=para.hidden_size.low,
+            high=para.hidden_size.high,
+            step=para.hidden_size.step,
+        )
+        fnn_layers = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_FNN_LAYERS),
+            low=para.fnn_layers.low,
+            high=para.fnn_layers.high,
+            step=para.fnn_layers.step,
+        )
+        learning_rate = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_LEARNING_RATE),
+            low=para.learning_rate.low,
+            high=para.learning_rate.high,
+            log=True,
+        )
+        number_epochs = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_NUMBER_EPOCHS),
+            low=para.number_epochs,
+            high=para.number_epochs,
+        )
+        number_repeats = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_NUMBER_REPEATS),
+            low=para.number_repeats,
+            high=para.number_repeats,
+        )
+        patience = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_PATIENCE),
+            low=para.patience,
+            high=para.patience,
+        )
+        batch_size = trial.suggest_categorical(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_BATCH_SIZE),
+            choices=para.batch_size,
+        )
+        train_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_TRAIN_SIZE),
+            low=para.train_size,
+            high=para.train_size,
+        )
+        val_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_VAL_SIZE),
+            low=para.val_size,
+            high=para.val_size,
+        )
+        test_size = trial.suggest_float(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_TEST_SIZE),
+            low=para.test_size,
+            high=para.test_size,
+        )
+        random_seed = trial.suggest_int(
+            name=_encode_name(_CE.ALGORITHMS_FASTPROP_RANDOM_SEED),
+            low=para.random_seed,
+            high=para.random_seed,
+        )
+        return build.FastPropRegressor.new(
+            batch_size=batch_size,
+            number_epochs=number_epochs,
+            number_repeats=number_repeats,
+            patience=patience,
+            hidden_size=hidden_size,
+            fnn_layers=fnn_layers,
+            learning_rate=learning_rate,
+            random_seed=random_seed,
+            train_size=train_size,
+            val_size=val_size,
+            test_size=test_size,
+        )
     elif isinstance(alg, opt.ChemPropRegressor):
         activation = trial.suggest_categorical(
             name=_encode_name(_CE.ALGORITHMS_CHEMPROP_ACTIVATION),

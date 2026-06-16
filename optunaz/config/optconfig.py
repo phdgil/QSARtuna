@@ -767,6 +767,143 @@ class PRFClassifier(Algorithm):
     parameters: Parameters
 
 
+class TabPFNFeatureSelection(str, Enum):
+    K_BEST = "k_best"
+    TREE = "tree"
+
+
+class TabPFNClassifierEvalMetric(str, Enum):
+    ACCURACY = "accuracy"
+    ROC_AUC = "roc_auc"
+    F1 = "f1"
+    LOG_LOSS = "log_loss"
+
+
+class TabPFNRegressorEvalMetric(str, Enum):
+    MSE = "mse"
+    ROOT_MEAN_SQUARED_ERROR = "root_mean_squared_error"
+    MAE = "mae"
+
+
+@dataclass
+class TabPFNClassifier(Algorithm):
+    @type_name("TabPFNClassifierParams")
+    @dataclass
+    class Parameters:
+        max_time: Annotated[int, schema(min=1, title="Max Time")] = field(default=150)
+        random_state: Annotated[int, schema(title="Random State")] = field(default=42)
+        max_feats: Annotated[int, schema(min=1, title="Max Features")] = field(default=500)
+        feature_selection: Annotated[
+            List[TabPFNFeatureSelection],
+            schema(title="Feature Selection"),
+        ] = field(default_factory=lambda: [TabPFNFeatureSelection.K_BEST])
+        eval_metric: Annotated[
+            List[TabPFNClassifierEvalMetric],
+            schema(title="Eval Metric"),
+        ] = field(default_factory=lambda: [TabPFNClassifierEvalMetric.ACCURACY])
+
+    name: Literal["TabPFNClassifier"]
+    parameters: Parameters
+
+
+@dataclass
+class TabPFNRegressor(Algorithm):
+    @type_name("TabPFNRegressorParams")
+    @dataclass
+    class Parameters:
+        max_time: Annotated[int, schema(min=1, title="Max Time")] = field(default=150)
+        random_state: Annotated[int, schema(title="Random State")] = field(default=42)
+        max_feats: Annotated[int, schema(min=1, title="Max Features")] = field(default=500)
+        feature_selection: Annotated[
+            List[TabPFNFeatureSelection],
+            schema(title="Feature Selection"),
+        ] = field(default_factory=lambda: [TabPFNFeatureSelection.K_BEST])
+        eval_metric: Annotated[
+            List[TabPFNRegressorEvalMetric],
+            schema(title="Eval Metric"),
+        ] = field(default_factory=lambda: [TabPFNRegressorEvalMetric.ROOT_MEAN_SQUARED_ERROR])
+
+    name: Literal["TabPFNRegressor"]
+    parameters: Parameters
+
+
+@dataclass
+class FastPropClassifier(Algorithm):
+    @type_name("FastPropClassifierParams")
+    @dataclass
+    class Parameters:
+        @dataclass
+        class HiddenSize:
+            low: int = field(default=100, metadata=schema(min=100))
+            high: int = field(default=1800, metadata=schema(min=100))
+            step: int = field(default=100, metadata=schema(min=100))
+
+        @dataclass
+        class FnnLayers:
+            low: int = field(default=1, metadata=schema(min=1))
+            high: int = field(default=4, metadata=schema(min=1))
+            step: int = field(default=1, metadata=schema(min=1))
+
+        @dataclass
+        class LearningRate:
+            low: float = field(default=0.00001, metadata=schema(min=0.00001))
+            high: float = field(default=0.001, metadata=schema(min=0.00001))
+
+        hidden_size: HiddenSize = field(default_factory=HiddenSize, metadata=schema(title="Hidden Size"))
+        fnn_layers: FnnLayers = field(default_factory=FnnLayers, metadata=schema(title="FNN Layers"))
+        learning_rate: LearningRate = field(default_factory=LearningRate, metadata=schema(title="Learning Rate"))
+        batch_size: Annotated[List[int], schema(title="Batch Size")] = field(default_factory=lambda: [64, 128, 256])
+        number_epochs: Annotated[int, schema(min=1, title="Epochs")] = field(default=100)
+        number_repeats: Annotated[int, schema(min=1, title="Repeats")] = field(default=1)
+        patience: Annotated[int, schema(min=0, title="Patience")] = field(default=10)
+        random_seed: Annotated[int, schema(min=1, title="Random Seed")] = field(default=42)
+        train_size: Annotated[float, schema(min=0.00001, title="Train Size")] = field(default=0.8)
+        val_size: Annotated[float, schema(min=0.00001, title="Validation Size")] = field(default=0.15)
+        test_size: Annotated[float, schema(min=0.00001, title="Test Size")] = field(default=0.05)
+
+
+    name: Literal["FastPropClassifier"]
+    parameters: Parameters
+
+
+@dataclass
+class FastPropRegressor(Algorithm):
+    @type_name("FastPropRegressorParams")
+    @dataclass
+    class Parameters:
+        @dataclass
+        class HiddenSize:
+            low: int = field(default=100, metadata=schema(min=100))
+            high: int = field(default=1800, metadata=schema(min=100))
+            step: int = field(default=100, metadata=schema(min=100))
+
+        @dataclass
+        class FnnLayers:
+            low: int = field(default=1, metadata=schema(min=1))
+            high: int = field(default=4, metadata=schema(min=1))
+            step: int = field(default=1, metadata=schema(min=1))
+
+        @dataclass
+        class LearningRate:
+            low: float = field(default=0.00001, metadata=schema(min=0.00001))
+            high: float = field(default=0.001, metadata=schema(min=0.00001))
+
+        hidden_size: HiddenSize = field(default_factory=HiddenSize, metadata=schema(title="Hidden Size"))
+        fnn_layers: FnnLayers = field(default_factory=FnnLayers, metadata=schema(title="FNN Layers"))
+        learning_rate: LearningRate = field(default_factory=LearningRate, metadata=schema(title="Learning Rate"))
+        batch_size: Annotated[List[int], schema(title="Batch Size")] = field(default_factory=lambda: [64, 128, 256])
+        number_epochs: Annotated[int, schema(min=1, title="Epochs")] = field(default=100)
+        number_repeats: Annotated[int, schema(min=1, title="Repeats")] = field(default=1)
+        patience: Annotated[int, schema(min=0, title="Patience")] = field(default=10)
+        random_seed: Annotated[int, schema(min=1, title="Random Seed")] = field(default=42)
+        train_size: Annotated[float, schema(min=0.00001, title="Train Size")] = field(default=0.8)
+        val_size: Annotated[float, schema(min=0.00001, title="Validation Size")] = field(default=0.15)
+        test_size: Annotated[float, schema(min=0.00001, title="Test Size")] = field(default=0.05)
+
+    name: Literal["FastPropRegressor"]
+    parameters: Parameters
+
+
 class ChemPropActivation(str, Enum):
     """
     The activation function to use within the network.
@@ -1572,11 +1709,13 @@ AnyRegressionAlgorithm = Union[
     KNeighborsRegressor,
     SVR,
     XGBRegressor,
-    PRFClassifier,  # PRFClassifier ingests/outputs continuous probabilities so should be evaluated as regressor
+    PRFClassifier,
     ChemPropRegressor,
     ChemPropRegressorPretrained,
     ChemPropHyperoptRegressor,
     CustomRegressionModel,
+    TabPFNRegressor,
+    FastPropRegressor,
 ]
 
 AnyClassificationAlgorithm = Union[
@@ -1588,7 +1727,10 @@ AnyClassificationAlgorithm = Union[
     ChemPropClassifier,
     ChemPropHyperoptClassifier,
     CustomClassificationModel,
+    TabPFNClassifier,
+    FastPropClassifier,
 ]
+
 
 
 class CalibratedClassifierCVEnsemble(str, Enum):
@@ -1740,7 +1882,9 @@ def detect_mode_from_algs(algs: List[AnyAlgorithm]) -> ModelMode:
         PRFClassifier,
         Mapie,
         CustomRegressionModel,
-        KNeighborsRegressor
+        KNeighborsRegressor,
+        TabPFNRegressor,
+        FastPropRegressor,
     ]
     classification_algs = [
         AdaBoostClassifier,
@@ -1751,7 +1895,9 @@ def detect_mode_from_algs(algs: List[AnyAlgorithm]) -> ModelMode:
         ChemPropHyperoptClassifier,
         CalibratedClassifierCVWithVA,
         CustomClassificationModel,
-        KNeighborsClassifier
+        KNeighborsClassifier,
+        TabPFNClassifier,
+        FastPropClassifier,
     ]
     if all(isanyof(alg, regression_algs) for alg in algs):
         mode = ModelMode.REGRESSION

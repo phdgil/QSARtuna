@@ -177,6 +177,30 @@ class ConfigurationEnum:
     ALGORITHMS_PRF_USE_PY_GINI = "use_py_gini"
     ALGORITHMS_PRF_USE_PY_LEAFS = "use_py_leafs"
 
+    # algorithm: TabPFN specific
+    ALGORITHMS_TABPFN_CLASSIFIER = "TabPFNClassifier"
+    ALGORITHMS_TABPFN_REGRESSOR = "TabPFNRegressor"
+    ALGORITHMS_TABPFN_MAX_TIME = "max_time"
+    ALGORITHMS_TABPFN_RANDOM_STATE = "random_state"
+    ALGORITHMS_TABPFN_MAX_FEATS = "max_feats"
+    ALGORITHMS_TABPFN_FEATURE_SELECTION = "feature_selection"
+    ALGORITHMS_TABPFN_EVAL_METRIC = "eval_metric"
+
+    # algorithm: FastProp specific
+    ALGORITHMS_FASTPROP_CLASSIFIER = "FastPropClassifier"
+    ALGORITHMS_FASTPROP_REGRESSOR = "FastPropRegressor"
+    ALGORITHMS_FASTPROP_HIDDEN_SIZE = "hidden_size"
+    ALGORITHMS_FASTPROP_FNN_LAYERS = "fnn_layers"
+    ALGORITHMS_FASTPROP_LEARNING_RATE = "learning_rate"
+    ALGORITHMS_FASTPROP_NUMBER_EPOCHS = "number_epochs"
+    ALGORITHMS_FASTPROP_NUMBER_REPEATS = "number_repeats"
+    ALGORITHMS_FASTPROP_PATIENCE = "patience"
+    ALGORITHMS_FASTPROP_BATCH_SIZE = "batch_size"
+    ALGORITHMS_FASTPROP_TRAIN_SIZE = "train_size"
+    ALGORITHMS_FASTPROP_VAL_SIZE = "val_size"
+    ALGORITHMS_FASTPROP_TEST_SIZE = "test_size"
+    ALGORITHMS_FASTPROP_RANDOM_SEED = "random_seed"
+
     # algorithm: ChemProp specific
     ALGORITHMS_CHEMPROP = "BaseChemProp"
     ALGORITHMS_CHEMPROP_REGRESSOR = "ChemPropRegressor"
